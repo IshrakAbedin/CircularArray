@@ -12,26 +12,48 @@ struct Vec3
 	Vec3(float val) : X(val), Y(val), Z(val) {}
 	Vec3(float x, float y, float z) : X(x), Y(y), Z(z) {}
 
-	Vec3(const Vec3& other) : X(other.X), Y(other.Y), Z(other.Z) { std::printf("Vec3 Copy!\n"); }
+	Vec3(const Vec3& other) : X(other.X), Y(other.Y), Z(other.Z)
+	{
+#ifdef DEBUG
+		std::printf("Vec3 Copy!\n");
+#endif
+	}
+
 	Vec3& operator=(const Vec3& other)
-	{ 
+	{
 		X = other.X;
 		Y = other.Y;
 		Z = other.Z;
+#ifdef DEBUG
 		std::printf("Vec3 Copy!\n");
+#endif
 		return *this;
 	}
-	Vec3(Vec3&& other) noexcept : X(std::move(other.X)), Y(std::move(other.Y)), Z(std::move(other.Z)) { std::printf("Vec3 Move!\n"); }
+
+	Vec3(Vec3&& other) noexcept : X(std::move(other.X)), Y(std::move(other.Y)), Z(std::move(other.Z))
+	{
+#ifdef DEBUG
+		std::printf("Vec3 Move!\n");
+#endif
+	}
+
 	Vec3& operator=(Vec3&& other) noexcept
 	{
 		X = std::move(other.X);
 		Y = std::move(other.Y);
 		Z = std::move(other.Z);
+#ifdef DEBUG
 		std::printf("Vec3 Move!\n");
+#endif
 		return *this;
 	}
 
-	~Vec3() { std::printf("\nVec3 {%g, %g, %g} Destroyed!\n", X, Y, Z); }
+	~Vec3()
+	{
+#ifdef DEBUG
+		std::printf("\nVec3 {%g, %g, %g} Destroyed!\n", X, Y, Z);
+#endif
+	}
 	inline void PrintSelf()
 	{
 		std::printf("{%g, %g, %g}", X, Y, Z);
@@ -46,6 +68,7 @@ void StructTestWithEmplace();
 void IteratorTest();
 void IteratorOperatorPlusAndPlusAssignTest();
 void IteratorWithStructTest();
+void InitializerListTest();
 
 int main()
 {
@@ -55,6 +78,7 @@ int main()
 	IteratorTest();
 	IteratorOperatorPlusAndPlusAssignTest();
 	IteratorWithStructTest();
+	InitializerListTest();
 }
 
 template<typename T, size_t S>
@@ -72,8 +96,7 @@ void intTest()
 	DebugPrintInfo(carray);
 	for (int i = 0; i < 15; i++)
 	{
-		std::printf("Adding: %d ...", i);
-		std::cin.get();
+		std::printf("Adding: %d ...\n", i);
 		carray.Add(i);
 		for (int j = 0; j < carray.Count(); j++)
 		{
@@ -88,8 +111,7 @@ void intTest()
 
 	for (int i = 0; i < 10; i++)
 	{
-		std::printf("Removal %d ...", i);
-		std::cin.get();
+		std::printf("Removal %d ...\n", i);
 		carray.RemoveLastItem();
 		for (int j = 0; j < carray.Count(); j++)
 		{
@@ -104,8 +126,7 @@ void intTest()
 
 	for (int i = 0; i < 10; i++)
 	{
-		std::printf("Adding: %d ...", i);
-		std::cin.get();
+		std::printf("Adding: %d ...\n", i);
 		carray.Add(i);
 		for (int j = 0; j < carray.Count(); j++)
 		{
@@ -125,10 +146,10 @@ void StructTest()
 	ish::CircularArray<Vec3, 5> carray;
 
 	carray.Add(Vec3{ 1, 2, 3 }); for (int i = 0; i < carray.Count(); i++) carray[i].PrintSelf(); std::cout << std::endl;
-	carray.Add(Vec3{5}); for (int i = 0; i < carray.Count(); i++) carray[i].PrintSelf(); std::cout << std::endl;
+	carray.Add(Vec3{ 5 }); for (int i = 0; i < carray.Count(); i++) carray[i].PrintSelf(); std::cout << std::endl;
 	carray.Add({ 7, 8, 9 }); for (int i = 0; i < carray.Count(); i++) carray[i].PrintSelf(); std::cout << std::endl;
-	carray.Add({22}); for (int i = 0; i < carray.Count(); i++) carray[i].PrintSelf(); std::cout << std::endl;
-	carray.Add({33}); for (int i = 0; i < carray.Count(); i++) carray[i].PrintSelf(); std::cout << std::endl;
+	carray.Add({ 22 }); for (int i = 0; i < carray.Count(); i++) carray[i].PrintSelf(); std::cout << std::endl;
+	carray.Add({ 33 }); for (int i = 0; i < carray.Count(); i++) carray[i].PrintSelf(); std::cout << std::endl;
 	carray.RemoveLastItem();
 	carray.RemoveLastItem();
 	carray.Add({ 0, 1, 0 }); for (int i = 0; i < carray.Count(); i++) carray[i].PrintSelf(); std::cout << std::endl;
@@ -215,7 +236,7 @@ void IteratorOperatorPlusAndPlusAssignTest()
 	std::cout << "Begin + 1: " << *(it + 1) << std::endl;
 	std::cout << "Begin + 2: " << *(it + 2) << std::endl;
 	std::cout << "Begin + 3: " << *(it + 3) << std::endl << std::endl;
-	
+
 	std::cout << "Begin = Begin + 1: " << *(it = it + 1) << std::endl;
 	std::cout << "Begin: " << *it << std::endl;
 	std::cout << "Begin += 1: " << *(it += 1) << std::endl;
@@ -234,7 +255,7 @@ void IteratorWithStructTest()
 
 	for (int i = 0; i < 5; i++)
 	{
-		if(i % 2)
+		if (i % 2)
 			carray.EmplaceBack(i, i + 1, i + 2);
 		else
 			carray.EmplaceBack(i * i);
@@ -244,4 +265,35 @@ void IteratorWithStructTest()
 		std::printf("{%g, %g, %g}\n", val.X, val.Y, val.Z);
 
 	std::printf("########## END ITERATOR WITH STRUCT TEST ##########\n\n");
+}
+
+void InitializerListTest()
+{
+	std::printf("########## BEGIN INITIALIZER LIST TEST ##########\n\n");
+
+	std::printf(">> For primitive types (int): \n");
+
+	ish::CircularArray<int, 5> carrayInt{ 1, 2, 3, 4, 5, 6, 7 };
+	for (int item : carrayInt)
+	{
+		std::printf("%d, ", item);
+	}
+	std::printf("\n");
+
+	std::printf(">> For structs (Vec3): \n");
+
+	ish::CircularArray<Vec3, 6> carrayVec3{ {1}, {2}, {3}, {4} };
+
+	carrayVec3 = {
+		{1, 2, 3},
+		Vec3(4, 5, 6)
+	};
+
+	for (auto& item : carrayVec3)
+	{
+		std::printf("{%g, %g, %g}, ", item.X, item.Y, item.Z);
+	}
+	std::printf("\n");
+
+	std::printf("########## END INITIALIZER LIST TEST ##########\n\n");
 }
