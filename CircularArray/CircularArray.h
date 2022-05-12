@@ -26,9 +26,95 @@ SOFTWARE.
 
 namespace ish
 {
+	// Circular Array Forward Iterator
+	template<typename _CircularArray>
+	class CircularArrayForwardIterator
+	{
+	public:
+		using ValueType = typename _CircularArray::ValueType;
+		using PtrType = ValueType*;
+		using RefType = ValueType&;
+	private:
+		PtrType m_BeginPtr;
+		PtrType m_CurrentPtr;
+		size_t m_Count;
+		size_t m_Start;
+		size_t m_Index = 0;
+	public:
+		CircularArrayForwardIterator(PtrType beginPtr, size_t count, size_t start, bool isEnd = false)
+			: m_BeginPtr(beginPtr), m_Count(count), m_Start(start)
+		{
+			m_CurrentPtr = isEnd ? beginPtr + count : beginPtr + (start % count);
+		}
+
+		CircularArrayForwardIterator(const CircularArrayForwardIterator& other)
+		{
+			m_BeginPtr = other.m_BeginPtr;
+			m_CurrentPtr = other.m_CurrentPtr;
+			m_Count = other.m_Count;
+			m_Start = other.m_Start;
+			m_Index = other.m_Index;
+		}
+
+		CircularArrayForwardIterator& operator=(const CircularArrayForwardIterator& other)
+		{
+			m_BeginPtr = other.m_BeginPtr;
+			m_CurrentPtr = other.m_CurrentPtr;
+			m_Count = other.m_Count;
+			m_Start = other.m_Start;
+			m_Index = other.m_Index;
+			return *this;
+		}
+
+		RefType operator*()
+		{
+			return *m_CurrentPtr;
+		}
+
+		PtrType operator->()
+		{
+			return m_CurrentPtr;
+		}
+
+		CircularArrayForwardIterator& operator++()
+		{
+			m_Index++;
+			if (m_Index >= m_Count)
+			{
+				m_CurrentPtr = m_BeginPtr + m_Count;
+			}
+			else
+			{
+				m_CurrentPtr = m_BeginPtr + ((m_Start + m_Index) % m_Count);
+			}
+			return *this;
+		}
+
+		CircularArrayForwardIterator& operator++(int)
+		{
+			CircularArrayForwardIterator tmp = *this;
+			++(*this);
+			return tmp;
+		}
+
+		bool operator==(const CircularArrayForwardIterator& other)
+		{
+			return m_CurrentPtr == other.m_CurrentPtr;
+		}
+
+		bool operator!=(const CircularArrayForwardIterator& other)
+		{
+			return !(*this == other);
+		}
+	};
+
+	// Circular Array Data Structure
 	template<typename _Ty, size_t _Capacity>
 	class CircularArray
 	{
+	public:
+		using ValueType = _Ty;
+		using ForwardIterator = CircularArrayForwardIterator<CircularArray<_Ty, _Capacity>>;
 	private:
 		_Ty m_Data[_Capacity] = {0};
 		size_t m_Start = 0;
@@ -94,6 +180,16 @@ namespace ish
 		inline size_t Next() const { return m_Next; }
 
 		_Ty* Data() { return m_Data; }
+
+		ForwardIterator begin()
+		{
+			return ForwardIterator(m_Data, m_Count, m_Start);
+		}
+
+		ForwardIterator end()
+		{
+			return ForwardIterator(m_Data, m_Count, m_Start, true);
+		}
 
 		const _Ty& operator[](size_t index) const
 		{

@@ -1,4 +1,5 @@
 #include <iostream>
+#include <vector>
 #include "CircularArray.h"
 
 struct Vec3
@@ -42,12 +43,14 @@ void DebugPrintInfo(const ish::CircularArray<T, S> carray);
 void intTest();
 void StructTest();
 void StructTestWithEmplace();
+void IteratorTest();
 
 int main()
 {
-	intTest();
+	/*intTest();
 	StructTest();
-	StructTestWithEmplace();
+	StructTestWithEmplace();*/
+	IteratorTest();
 }
 
 template<typename T, size_t S>
@@ -146,4 +149,43 @@ void StructTestWithEmplace()
 	carray.EmplaceBack(22, 33, 44); for (int i = 0; i < carray.Count(); i++) carray[i].PrintSelf(); std::cout << std::endl;
 
 	std::printf("########## END STRUCT EMPLACE TEST ##########\n\n");
+}
+
+void IteratorTest()
+{
+	std::printf("########## BEGIN ITERATOR TEST ##########\n\n");
+
+	ish::CircularArray<int, 4> carray;
+	std::vector<int> refVector{ 1, 2, 3, 4 };
+
+	carray.Add(1);
+	carray.Add(2);
+	carray.Add(3);
+	carray.Add(4);
+	carray.Add(5);
+
+
+	std::printf(">> Index based for loop:\n");
+	for (int i = 0; i < carray.Count(); i++)
+	{
+		std::cout << carray[i] << ',';
+	}
+	std::cout << std::endl;
+
+	std::printf(">> Iterator based for loop:\n");
+	for (ish::CircularArray<int, 4>::ForwardIterator it = carray.begin(); it != carray.end(); it++)
+	{
+		std::cout << *it << ',';
+	}
+	std::cout << std::endl;
+
+	std::printf(">> Ranged for loop:\n");
+	for (auto& val : carray)
+	{
+		std::cout << val << ',';
+		val = 2;
+	}
+	std::cout << std::endl;
+
+	std::printf("########## END ITERATOR TEST ##########\n\n");
 }
