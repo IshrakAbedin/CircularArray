@@ -44,6 +44,8 @@ void intTest();
 void StructTest();
 void StructTestWithEmplace();
 void IteratorTest();
+void IteratorOperatorPlusAndPlusAssignTest();
+void IteratorWithStructTest();
 
 int main()
 {
@@ -51,6 +53,8 @@ int main()
 	StructTest();
 	StructTestWithEmplace();*/
 	IteratorTest();
+	IteratorOperatorPlusAndPlusAssignTest();
+	IteratorWithStructTest();
 }
 
 template<typename T, size_t S>
@@ -188,4 +192,56 @@ void IteratorTest()
 	std::cout << std::endl;
 
 	std::printf("########## END ITERATOR TEST ##########\n\n");
+}
+
+void IteratorOperatorPlusAndPlusAssignTest()
+{
+	std::printf("########## BEGIN ITERATOR + and += TEST ##########\n\n");
+
+	ish::CircularArray<int, 5> carray;
+	for (int i = 0; i < 10; i++)
+	{
+		carray.Add(i);
+	}
+	for (auto val : carray)
+	{
+		std::printf("%d, ", val);
+	}
+	std::printf("\n\n");
+
+	auto it = carray.begin();
+
+	std::cout << "Begin: " << *it << std::endl;
+	std::cout << "Begin + 1: " << *(it + 1) << std::endl;
+	std::cout << "Begin + 2: " << *(it + 2) << std::endl;
+	std::cout << "Begin + 3: " << *(it + 3) << std::endl << std::endl;
+	
+	std::cout << "Begin = Begin + 1: " << *(it = it + 1) << std::endl;
+	std::cout << "Begin: " << *it << std::endl;
+	std::cout << "Begin += 1: " << *(it += 1) << std::endl;
+	std::cout << "Begin += 2: " << *(it += 2) << std::endl;
+	std::cout << "Begin += -2: " << *(it += -2) << std::endl;
+	std::cout << "Begin += 3(garbage expected): " << *(it + 3) << std::endl;
+
+	std::printf("########## END ITERATOR + and += TEST ##########\n\n");
+}
+
+void IteratorWithStructTest()
+{
+	std::printf("########## BEGIN ITERATOR WITH STRUCT TEST ##########\n\n");
+
+	ish::CircularArray<Vec3, 4> carray;
+
+	for (int i = 0; i < 5; i++)
+	{
+		if(i % 2)
+			carray.EmplaceBack(i, i + 1, i + 2);
+		else
+			carray.EmplaceBack(i * i);
+	}
+
+	for (auto& val : carray)
+		std::printf("{%g, %g, %g}\n", val.X, val.Y, val.Z);
+
+	std::printf("########## END ITERATOR WITH STRUCT TEST ##########\n\n");
 }

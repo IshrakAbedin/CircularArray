@@ -76,6 +76,37 @@ namespace ish
 			return m_CurrentPtr;
 		}
 
+		// Adding a negative value is discouraged
+		CircularArrayForwardIterator& operator+=(std::ptrdiff_t offset)
+		{
+			if (offset < 0 && -offset > m_Index)
+			{
+				m_Index = 0;
+				m_CurrentPtr = m_BeginPtr;
+			}
+			else
+			{
+				m_Index += offset;
+				if (m_Index >= m_Count)
+				{
+					m_CurrentPtr = m_BeginPtr + m_Count;
+				}
+				else
+				{
+					m_CurrentPtr = m_BeginPtr + ((m_Start + m_Index) % m_Count);
+				}
+			}
+			return *this;
+		}
+
+		// Adding a negative value is discouraged
+		CircularArrayForwardIterator operator+(std::ptrdiff_t offset)
+		{
+			CircularArrayForwardIterator tmp =  *this;
+			tmp += offset;
+			return tmp;
+		}
+
 		CircularArrayForwardIterator& operator++()
 		{
 			m_Index++;
