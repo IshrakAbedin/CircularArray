@@ -49,9 +49,9 @@ void IteratorWithStructTest();
 
 int main()
 {
-	/*intTest();
+	intTest();
 	StructTest();
-	StructTestWithEmplace();*/
+	StructTestWithEmplace();
 	IteratorTest();
 	IteratorOperatorPlusAndPlusAssignTest();
 	IteratorWithStructTest();

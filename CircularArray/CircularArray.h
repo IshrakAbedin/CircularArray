@@ -41,13 +41,13 @@ namespace ish
 		size_t m_Start;
 		size_t m_Index = 0;
 	public:
-		CircularArrayForwardIterator(PtrType beginPtr, size_t count, size_t start, bool isEnd = false)
+		CircularArrayForwardIterator(PtrType beginPtr, size_t count, size_t start, bool isEnd = false) noexcept
 			: m_BeginPtr(beginPtr), m_Count(count), m_Start(start)
 		{
 			m_CurrentPtr = isEnd ? beginPtr + count : beginPtr + (start % count);
 		}
 
-		CircularArrayForwardIterator(const CircularArrayForwardIterator& other)
+		CircularArrayForwardIterator(const CircularArrayForwardIterator& other) noexcept
 		{
 			m_BeginPtr = other.m_BeginPtr;
 			m_CurrentPtr = other.m_CurrentPtr;
@@ -56,7 +56,7 @@ namespace ish
 			m_Index = other.m_Index;
 		}
 
-		CircularArrayForwardIterator& operator=(const CircularArrayForwardIterator& other)
+		CircularArrayForwardIterator& operator=(const CircularArrayForwardIterator& other) noexcept
 		{
 			m_BeginPtr = other.m_BeginPtr;
 			m_CurrentPtr = other.m_CurrentPtr;
@@ -66,18 +66,18 @@ namespace ish
 			return *this;
 		}
 
-		RefType operator*()
+		RefType operator*() const noexcept
 		{
 			return *m_CurrentPtr;
 		}
 
-		PtrType operator->()
+		PtrType operator->() const noexcept
 		{
 			return m_CurrentPtr;
 		}
 
 		// Adding a negative value is discouraged
-		CircularArrayForwardIterator& operator+=(std::ptrdiff_t offset)
+		CircularArrayForwardIterator& operator+=(std::ptrdiff_t offset) noexcept
 		{
 			if (offset < 0 && -offset > m_Index)
 			{
@@ -100,14 +100,14 @@ namespace ish
 		}
 
 		// Adding a negative value is discouraged
-		CircularArrayForwardIterator operator+(std::ptrdiff_t offset)
+		CircularArrayForwardIterator operator+(std::ptrdiff_t offset) const noexcept
 		{
 			CircularArrayForwardIterator tmp =  *this;
 			tmp += offset;
 			return tmp;
 		}
 
-		CircularArrayForwardIterator& operator++()
+		CircularArrayForwardIterator& operator++() noexcept
 		{
 			m_Index++;
 			if (m_Index >= m_Count)
@@ -121,19 +121,19 @@ namespace ish
 			return *this;
 		}
 
-		CircularArrayForwardIterator& operator++(int)
+		CircularArrayForwardIterator& operator++(int) noexcept
 		{
 			CircularArrayForwardIterator tmp = *this;
 			++(*this);
 			return tmp;
 		}
 
-		bool operator==(const CircularArrayForwardIterator& other)
+		bool operator==(const CircularArrayForwardIterator& other) const noexcept
 		{
 			return m_CurrentPtr == other.m_CurrentPtr;
 		}
 
-		bool operator!=(const CircularArrayForwardIterator& other)
+		bool operator!=(const CircularArrayForwardIterator& other) const noexcept
 		{
 			return !(*this == other);
 		}
@@ -152,9 +152,9 @@ namespace ish
 		size_t m_Next = 0;
 		size_t m_Count = 0;
 	public:
-		CircularArray() {}
+		CircularArray() noexcept {}
 
-		CircularArray(const CircularArray& other)
+		CircularArray(const CircularArray& other) noexcept
 		{
 			for (size_t i = 0; i < _Capacity; i++)
 			{
@@ -165,7 +165,7 @@ namespace ish
 			}
 		}
 
-		CircularArray& operator=(const CircularArray& other)
+		CircularArray& operator=(const CircularArray& other) noexcept
 		{
 			for (size_t i = 0; i < _Capacity; i++)
 			{
@@ -177,7 +177,7 @@ namespace ish
 			return *this;
 		}
 
-		CircularArray(CircularArray&& other)
+		CircularArray(CircularArray&& other) noexcept
 		{
 			for (size_t i = 0; i < _Capacity; i++)
 			{
@@ -188,7 +188,7 @@ namespace ish
 			}
 		}
 
-		CircularArray& operator=(CircularArray&& other)
+		CircularArray& operator=(CircularArray&& other) noexcept
 		{
 			for (size_t i = 0; i < _Capacity; i++)
 			{
@@ -200,39 +200,39 @@ namespace ish
 			return *this;
 		}
 		
-		~CircularArray() {}
+		~CircularArray() noexcept {}
 		
-		constexpr size_t Capacity() const { return _Capacity; }
+		constexpr size_t Capacity() const noexcept { return _Capacity; }
 
-		inline size_t Count() const { return m_Count; }
+		inline size_t Count() const noexcept { return m_Count; }
 
-		inline size_t Start() const { return m_Start; }
+		inline size_t Start() const noexcept { return m_Start; }
 
-		inline size_t Next() const { return m_Next; }
+		inline size_t Next() const noexcept { return m_Next; }
 
-		_Ty* Data() { return m_Data; }
+		_Ty* Data() noexcept { return m_Data; }
 
-		ForwardIterator begin()
+		ForwardIterator begin() noexcept
 		{
 			return ForwardIterator(m_Data, m_Count, m_Start);
 		}
 
-		ForwardIterator end()
+		ForwardIterator end() noexcept
 		{
 			return ForwardIterator(m_Data, m_Count, m_Start, true);
 		}
 
-		const _Ty& operator[](size_t index) const
+		const _Ty& operator[](size_t index) const noexcept
 		{
 			return m_Data[(m_Start + index) % _Capacity];
 		}
 
-		_Ty& operator[](size_t index)
+		_Ty& operator[](size_t index) noexcept
 		{
 			return m_Data[(m_Start + index) % _Capacity];
 		}
 
-		void Add(const _Ty& item)
+		void Add(const _Ty& item) noexcept
 		{
 			m_Data[m_Next] = item;
 			m_Next = (m_Next + 1) % _Capacity;
@@ -243,7 +243,7 @@ namespace ish
 			else m_Count++;
 		}
 
-		void Add(_Ty&& item)
+		void Add(_Ty&& item) noexcept
 		{
 			m_Data[m_Next] = std::move(item);
 			m_Next = (m_Next + 1) % _Capacity;
@@ -255,7 +255,7 @@ namespace ish
 		}
 
 		template<typename... Args>
-		_Ty& EmplaceBack(Args&&... args)
+		_Ty& EmplaceBack(Args&&... args) noexcept
 		{
 			new(&m_Data[m_Next]) _Ty(std::forward<Args>(args)...);
 			_Ty& rtrnRef = m_Data[m_Next];
@@ -268,7 +268,7 @@ namespace ish
 			return rtrnRef;
 		}
 
-		void RemoveLastItem()
+		void RemoveLastItem() noexcept
 		{
 			if (m_Count != 0)
 			{
