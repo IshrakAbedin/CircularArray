@@ -44,7 +44,7 @@ namespace ish
 		CircularArrayForwardIterator(PtrType beginPtr, size_t count, size_t start, bool isEnd = false) noexcept
 			: m_BeginPtr(beginPtr), m_Count(count), m_Start(start)
 		{
-			m_CurrentPtr = isEnd ? beginPtr + count : beginPtr + (start % count);
+				m_CurrentPtr = (isEnd || !count) ? beginPtr + count : beginPtr + (start % count);
 		}
 
 		CircularArrayForwardIterator(const CircularArrayForwardIterator& other) noexcept
@@ -79,7 +79,7 @@ namespace ish
 		// Adding a negative value is discouraged
 		CircularArrayForwardIterator& operator+=(std::ptrdiff_t offset) noexcept
 		{
-			if (offset < 0 && -offset > m_Index)
+			if (offset < 0 && (-offset) > m_Index)
 			{
 				m_Index = 0;
 				m_CurrentPtr = m_BeginPtr;
@@ -199,6 +199,24 @@ namespace ish
 			}
 			return *this;
 		}
+
+		CircularArray(std::initializer_list<_Ty> initList) noexcept
+		{
+			for (auto& item : initList)
+			{
+				EmplaceBack(item);
+			}
+		}
+
+		CircularArray& operator=(std::initializer_list<_Ty> initList) noexcept
+		{
+			Clear();
+			for (auto& item : initList)
+			{
+				EmplaceBack(item);
+			}
+			return *this;
+		}
 		
 		~CircularArray() noexcept {}
 		
@@ -275,6 +293,13 @@ namespace ish
 				m_Count--;
 				m_Next = m_Next == 0 ? _Capacity - 1 : m_Next - 1;
 			}
+		}
+
+		void Clear() noexcept
+		{
+			m_Start = 0;
+			m_Next = 0;
+			m_Count = 0;
 		}
 	};
 }
