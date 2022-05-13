@@ -173,10 +173,10 @@ namespace ish
 			for (size_t i = 0; i < _Capacity; i++)
 			{
 				m_Data[i] = other[i];
-				m_Start = other.m_Start;
-				m_Next = other.m_Next;
-				m_Count = other.m_Count;
 			}
+			m_Start = other.m_Start;
+			m_Next = other.m_Next;
+			m_Count = other.m_Count;
 		}
 
 		CircularArray& operator=(const CircularArray& other) noexcept
@@ -184,10 +184,10 @@ namespace ish
 			for (size_t i = 0; i < _Capacity; i++)
 			{
 				m_Data[i] = other[i];
-				m_Start = other.m_Start;
-				m_Next = other.m_Next;
-				m_Count = other.m_Count;
 			}
+			m_Start = other.m_Start;
+			m_Next = other.m_Next;
+			m_Count = other.m_Count;
 			return *this;
 		}
 
@@ -199,10 +199,11 @@ namespace ish
 			for (size_t i = 0; i < _Capacity; i++)
 			{
 				m_Data[i] = std::move(other[i]);
-				m_Start = other.m_Start;
-				m_Next = other.m_Next;
-				m_Count = other.m_Count;
 			}
+			m_Start = other.m_Start;
+			m_Next = other.m_Next;
+			m_Count = other.m_Count;
+			other.Clear();
 		}
 
 		CircularArray& operator=(CircularArray&& other) noexcept
@@ -210,10 +211,11 @@ namespace ish
 			for (size_t i = 0; i < _Capacity; i++)
 			{
 				m_Data[i] = std::move(other[i]);
-				m_Start = other.m_Start;
-				m_Next = other.m_Next;
-				m_Count = other.m_Count;
 			}
+			m_Start = other.m_Start;
+			m_Next = other.m_Next;
+			m_Count = other.m_Count;
+			other.Clear();
 			return *this;
 		}
 

@@ -65,6 +65,8 @@ void DebugPrintInfo(const ish::CircularArray<T, S> carray);
 void intTest();
 void StructTest();
 void StructTestWithEmplace();
+void CopyTest();
+void MoveTest();
 void IteratorTest();
 void IteratorOperatorPlusAndPlusAssignTest();
 void IteratorWithStructTest();
@@ -75,6 +77,8 @@ int main()
 	intTest();
 	StructTest();
 	StructTestWithEmplace();
+	CopyTest();
+	MoveTest();
 	IteratorTest();
 	IteratorOperatorPlusAndPlusAssignTest();
 	IteratorWithStructTest();
@@ -174,6 +178,93 @@ void StructTestWithEmplace()
 	carray.EmplaceBack(22, 33, 44); for (int i = 0; i < carray.Count(); i++) carray[i].PrintSelf(); std::cout << std::endl;
 
 	std::printf("########## END STRUCT EMPLACE TEST ##########\n\n");
+}
+
+void CopyTest()
+{
+	std::printf("########## BEGIN COPY TEST ##########\n\n");
+
+	ish::CircularArray<Vec3, 5> carray1;
+	// ish::CircularArray<Vec3, 5> carray2;
+
+	carray1.EmplaceBack(1, 2, 3);
+	carray1.EmplaceBack(4);
+	carray1.EmplaceBack(5, 6, 7);
+
+	ish::CircularArray<Vec3, 5> carray2{ carray1 };
+
+	std::printf("CARRAY1: ");
+	for (int i = 0; i < carray1.Count(); i++)
+		std::printf("{%g, %g, %g} ", carray1[i].X, carray1[i].Y, carray1[i].Z);
+	std::printf("\n");
+
+	std::printf("CARRAY2: ");
+	for (int i = 0; i < carray2.Count(); i++)
+		std::printf("{%g, %g, %g} ", carray1[i].X, carray1[i].Y, carray1[i].Z);
+	std::printf("\n");
+
+	std::printf("Adding 5,5,5 and 6,6,6 and 7,7,7 to CARRAY1 and then copying to CARRAY2:\n");
+
+	carray1.Add({ 5 });
+	carray1.Add({ 6 });
+	carray1.Add({ 7 });
+
+	carray2 = carray1;
+
+	std::printf("CARRAY1: ");
+	for (int i = 0; i < carray1.Count(); i++)
+		std::printf("{%g, %g, %g} ", carray1[i].X, carray1[i].Y, carray1[i].Z);
+	std::printf("\n");
+
+	std::printf("CARRAY2: ");
+	for (int i = 0; i < carray2.Count(); i++)
+		std::printf("{%g, %g, %g} ", carray1[i].X, carray1[i].Y, carray1[i].Z);
+	std::printf("\n");
+
+	std::printf("########## END COPY TEST ##########\n\n");
+}
+
+void MoveTest()
+{
+	std::printf("########## BEGIN MOVE TEST ##########\n\n");
+
+	ish::CircularArray<Vec3, 5> carray1;
+
+	carray1.EmplaceBack(1, 2, 3);
+	carray1.EmplaceBack(4);
+	carray1.EmplaceBack(5, 6, 7);
+
+	ish::CircularArray<Vec3, 5> carray2{ std::move(carray1) };
+
+	std::printf("CARRAY1: ");
+	for (int i = 0; i < carray1.Count(); i++) // Should not be looped after being moved
+		std::printf("{%g, %g, %g} ", carray1[i].X, carray1[i].Y, carray1[i].Z);
+	std::printf("\n");
+
+	std::printf("CARRAY2: ");
+	for (int i = 0; i < carray2.Count(); i++)
+		std::printf("{%g, %g, %g} ", carray1[i].X, carray1[i].Y, carray1[i].Z);
+	std::printf("\n");
+
+	std::printf("Adding 5,5,5 and 6,6,6 and 7,7,7 to CARRAY1 and then moving to CARRAY2:\n");
+
+	carray1.Add({ 5 });
+	carray1.Add({ 6 });
+	carray1.Add({ 7 });
+
+	carray2 = std::move(carray1);
+
+	std::printf("CARRAY1: ");
+	for (int i = 0; i < carray1.Count(); i++) // Should not be looped after being moved
+		std::printf("{%g, %g, %g} ", carray1[i].X, carray1[i].Y, carray1[i].Z);
+	std::printf("\n");
+
+	std::printf("CARRAY2: ");
+	for (int i = 0; i < carray2.Count(); i++)
+		std::printf("{%g, %g, %g} ", carray1[i].X, carray1[i].Y, carray1[i].Z);
+	std::printf("\n");
+
+	std::printf("########## END MOVE TEST ##########\n\n");
 }
 
 void IteratorTest()
