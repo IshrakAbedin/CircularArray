@@ -1,7 +1,7 @@
 <!-- Written by Mohammad Ishrak Abedin-->
 # Circular Array
 ---
-### A simple data structure in C++ to serve as a stack allocated circular array of size ***n***, where any amount of item can be added or pushed, and only the last ***n*** items will be preserved.
+### A simple data structure in C++ to serve as a stack (optionally heap) allocated circular array of size ***n***, where any amount of item can be added or pushed, and only the last ***n*** items will be preserved.
 ---
 ### The project relies on **[PREMAKE](https://premake.github.io/)** meta build system and can be compiled in Windows or Linux using preferred build system (Expected to use MSVC for Windows and GCC for Linux).
 
@@ -62,3 +62,13 @@ ish::CircularArray<type, capacity> ArrayName;
 ```
 
 Other functionalities like *adding* a new item or others can be found in the header file and the provided test file as well; they are pretty straight forward.
+
+---
+## Changing to Heap Allocation
+---
+Circular Arrays can be changed to be *heap allocated* instead of *stack allocated* by going into the [CircularArray.h](./CircularArray/CircularArray.h) header and changing the respective preprocessor definition `CARRAY_HEAP_ALLOC` value to `1`.
+
+```C++
+// #define CARRAY_HEAP_ALLOC 0 // Stack allocated 
+#define CARRAY_HEAP_ALLOC 1 // Heap allocated 
+```
