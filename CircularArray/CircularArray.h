@@ -24,6 +24,8 @@ SOFTWARE.
 
 #pragma once
 
+#define CARRAY_HEAP_ALLOC 0
+
 namespace ish
 {
 	// Circular Array Forward Iterator
@@ -147,15 +149,27 @@ namespace ish
 		using ValueType = _Ty;
 		using ForwardIterator = CircularArrayForwardIterator<CircularArray<_Ty, _Capacity>>;
 	private:
+#if CARRAY_HEAP_ALLOC
+		_Ty* m_Data = nullptr;
+#else
 		_Ty m_Data[_Capacity] = {0};
+#endif
 		size_t m_Start = 0;
 		size_t m_Next = 0;
 		size_t m_Count = 0;
 	public:
-		CircularArray() noexcept {}
+		CircularArray() noexcept
+		{
+#if CARRAY_HEAP_ALLOC
+			m_Data = new _Ty[_Capacity];
+#endif
+		}
 
 		CircularArray(const CircularArray& other) noexcept
 		{
+#if CARRAY_HEAP_ALLOC
+			m_Data = new _Ty[_Capacity];
+#endif
 			for (size_t i = 0; i < _Capacity; i++)
 			{
 				m_Data[i] = other[i];
@@ -179,6 +193,9 @@ namespace ish
 
 		CircularArray(CircularArray&& other) noexcept
 		{
+#if CARRAY_HEAP_ALLOC
+			m_Data = new _Ty[_Capacity];
+#endif
 			for (size_t i = 0; i < _Capacity; i++)
 			{
 				m_Data[i] = std::move(other[i]);
@@ -202,6 +219,9 @@ namespace ish
 
 		CircularArray(std::initializer_list<_Ty> initList) noexcept
 		{
+#if CARRAY_HEAP_ALLOC
+			m_Data = new _Ty[_Capacity];
+#endif
 			for (auto& item : initList)
 			{
 				EmplaceBack(item);
@@ -218,7 +238,12 @@ namespace ish
 			return *this;
 		}
 		
-		~CircularArray() noexcept {}
+		~CircularArray() noexcept
+		{
+#if CARRAY_HEAP_ALLOC
+			delete[] m_Data;
+#endif
+		}
 		
 		constexpr size_t Capacity() const noexcept { return _Capacity; }
 
