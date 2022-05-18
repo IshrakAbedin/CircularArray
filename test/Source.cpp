@@ -1,6 +1,7 @@
+#include "CircularArray.h"
+
 #include <iostream>
 #include <vector>
-#include "CircularArray.h"
 
 struct Vec3
 {

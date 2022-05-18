@@ -24,6 +24,8 @@ SOFTWARE.
 
 #pragma once
 
+#include <initializer_list>
+
 #define CARRAY_HEAP_ALLOC 0
 
 namespace ish
