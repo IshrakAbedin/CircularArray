@@ -87,7 +87,7 @@ int main()
 }
 
 template<typename T, size_t S>
-void DebugPrintInfo<T, S>(const ish::CircularArray<T, S> carray)
+void DebugPrintInfo(const ish::CircularArray<T, S> carray)
 {
 	std::printf("Capacity: %zu | Count: %zu | Start : %zu | Next: %zu\n",
 		carray.Capacity(), carray.Count(), carray.Start(), carray.Next());

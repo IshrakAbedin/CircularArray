@@ -25,6 +25,8 @@ SOFTWARE.
 #pragma once
 
 #include <initializer_list>
+#include <cstddef>
+#include <utility>
 
 #define CARRAY_HEAP_ALLOC 0
 
@@ -125,7 +127,7 @@ namespace ish
 			return *this;
 		}
 
-		CircularArrayForwardIterator& operator++(int) noexcept
+		CircularArrayForwardIterator operator++(int) noexcept
 		{
 			CircularArrayForwardIterator tmp = *this;
 			++(*this);
